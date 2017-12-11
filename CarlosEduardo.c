@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include<stdio.h>
 #include<stdlib.h>
-#include <conio.c> 
-#include <string.h>
+#include<conio.c> 
+#include<string.h>
 
 typedef struct {
 	char codle[21];
@@ -63,8 +63,10 @@ gotoxy(32,10);
 	
 }
 
-void menulivro (){
-	system("cls");
+void menulivro ()
+{
+	
+system("cls");
 linha();
 linhalateral();	
 gotoxy(34,7);	printf("MENU DO ACERVO\n");
@@ -181,15 +183,15 @@ system("cls");
 	
 	    setbuf(stdin,NULL);
 	
-		printf("Digite nome do aluno:");
+		printf("DIGITE O NOME DO ALUNO:");
 		 gets(pt->nomeal);
 	     setbuf(stdin,NULL);
 	     
-		printf("Digite o cpf:");
+		printf("DIGITE O CPF:");
 		 gets(pt->cpf);
 		 setbuf(stdin,NULL);
 		 
-		printf("Digite a matricula: ");
+		printf("DIGITE A MATRICULA: ");
 		 gets(pt->matri);
 		 setbuf(stdin,NULL);
 		 
@@ -199,38 +201,156 @@ system("cls");
 	fclose(file);
 }
 
-void removerlivro (LIVRO *pt){
-	system("cls");
-	char cod2 [12];
+void removerlivro (LIVRO *pt)
+{
+	char cod2 [11],c;
 	FILE *file,*file2;
+	
+	system("cls");
 	setbuf(stdin,NULL);
 	printf("DIGITE O CODIGO DO LIVRO:");
 	gets(cod2);
-	system("Pause");
+
 	file = fopen ("dadoslivro.dat","rb+");
 	file2= fopen ("livrosremo.dat","wb+");
-     rewind(file);
-	while  (fread(pt,sizeof(*pt),1,file)==1){
-		if (strcmp (cod2,pt->codl)!=0)
+    rewind(file);
+     
+	while  (fread(pt,sizeof(*pt),1,file)==1)
+	{  
+	
+	    if (strcmp(cod2,pt->codl)==0)
 		{
-
-		fwrite (pt,sizeof(*pt),1, file2);
-		  setbuf(stdin,NULL);	
-				
-			}
-		
-		}
-			fclose (file);
+	      	printf("NOME: %s\n",pt->nomel);
+	      	printf("AUTOR: %s\n",pt->nomea);
+	      	printf("AREA: %s\n",pt->area);
+	      	printf("CODIGO DO LIVRO: %s\n",pt->codl);
+	      	printf("QUANTIDADE: %d\n",pt->quant);
+	      	printf("DESEJA DELETAR O LIVRO: S-SIM, N-NAO:");
+	      	c=getch();
+	      	
+	    	if (c=='s'||c=='S')
+			{
+			
+	      	    rewind (file);
+	
+	     		while (fread(pt,sizeof(*pt),1,file)==1)
+		  		{
+		      		if(strcmp(cod2,pt->codl)!=0)
+			  		{
+	      				fwrite (pt,sizeof(*pt),1, file2);
+		        		setbuf(stdin,NULL);
+					}
+		    	}
+		    printf("\n\nLIVRO REMOVIDO\n");
+		    fclose (file);
 			remove ("dadoslivro.dat");
 			fclose (file2);
 			rename ("livrosremo.dat","dadoslivro.dat");
+			}
+		    
+	    }
+				
+			}
+		
+			system("Pause");
+}
+
+void removeraluno (ALUNO *pt)
+{
+	char matri2[11],c;
+	FILE *file,*file2;
+	
+	system("cls");
+	setbuf(stdin,NULL);
+	printf("DIGITE A MATRICULA DO ALUNO:");
+	gets(matri2);
+	
+	file = fopen ("dadosaluno.dat","rb+");
+	file2= fopen ("alunoremo.dat","wb+");
+    rewind(file);
+    
+		while  (fread(pt,sizeof(*pt),1,file)==1)
+	{  
+	
+	    if (strcmp(matri2,pt->matri)==0)
+		{
+	      	printf("NOME: %s\n",pt->nomeal);
+	      	printf("CPF: %s\n",pt->cpf);
+	      	printf("MATRICULA: %s\n",pt->matri);
+	      	printf("DESEJA DELETAR O ALUNO: S-SIM, N-NAO:");
+	      	c=getch();
+	      	
+	    	if (c=='s'||c=='S')
+			{
+			
+	      	    rewind (file);
+	
+	     		while (fread(pt,sizeof(*pt),1,file)==1)
+		  		{
+		      		if(strcmp(matri2,pt->matri)!=0)
+			  		{
+	      				fwrite (pt,sizeof(*pt),1, file2);
+		        		setbuf(stdin,NULL);
+					}
+		    	}
+		    printf("\n\nALUNO REMOVIDO\n");
+		    fclose (file);
+			remove ("dadosaluno.dat");
+			fclose (file2);
+			rename ("alunoremo.dat","dadosaluno.dat");
+			}
 			system("Pause");
 	}
+}
+}
+
+void editarlivro (LIVRO *pt)
+{
+	char c,cod2[11];
+	FILE *file;
+	system ("cls");
+	printf("DIGITE O CODIGO DO LIVRO");
+	gets(cod2);
+	file = fopen ("dadoslivro.dat","r+b");
+	while (fread(pt,sizeof(*pt),1,file)==1){
+		if (strcmp(cod2,pt->codl)==0){
+			printf("NOME: %s\n",pt->nomel);
+			printf("AUTOR: %s\n",pt->nomea);
+			printf("AREA: %s\n",pt->area);
+			printf("CODIGO DO LIVRO: %s\n",pt->codl);
+			printf("QUANTIDADE: %d\n",pt->quant);
+			printf("DESEJA FAZER ALTERACAO: S-SIM, N-NAO:");
+			c=getch();
+			if (c=='S'|| c=='s'){
+				printf("\n\nNOVO NOME:");
+				gets(pt->nomel);
+				setbuf(stdin,NULL);
+				printf("NOME DO AUTOR:");
+				gets(pt->nomea);
+				setbuf(stdin,NULL);
+				printf("AREA:");
+				gets(pt->area);
+				setbuf(stdin,NULL);
+				printf("CODIGO:");
+				gets(pt->area);
+				setbuf(stdin,NULL);
+				printf("QUANTIDADE:");
+				scanf("%d",&pt->quant);
+				fseek(file,ftell(file)-sizeof(*pt),0);
+				fwrite (pt,sizeof(*pt),1,file);
+				fclose(file);
+				
+			}
+		}
+	}
+	
+}
 
 
 
-main (){
-	char c;
+main ()
+{
+char c;
 LIVRO liv;
 ALUNO a;
 
@@ -249,20 +369,7 @@ ALUNO a;
 							            
 					               		break;
 					          
-					      	 case '2':do{
-								
-							           system("cls");
-							           printf("1- PARA PESQUISAR LIVRO PELO CODIGO\n");
-					      	           printf("2- PARA PESQUISAR LIVRO PELO CODIGO\n");
-					      	           printf("3- RETORNAR AO MENU PRINCIPAL");
-					      	           setbuf(stdin,NULL);
-										 c=getch();
-					      	           
-					      	           if (c=='1'){
-					      	           	 //editarcod(&liv);
-										 }
-	
-									   }while(c!='3');
+					      	 case '2': editarlivro(&liv);
 					                 	break;	  
 					                 	
 							  case '3': removerlivro (&liv);
@@ -276,7 +383,7 @@ ALUNO a;
 					
 					break;
 					
-		case '2': do{ menudoaluno();
+		case '2': do{  menudoaluno();
 		               c=getch();
 		           
 				     switch (c)
@@ -284,9 +391,10 @@ ALUNO a;
 		                  	case '1': cadastraraluno(&a);
 					               	    break;
 					          
-					      	case '2': //remover aluno(a);
-					                 	break;	  
-							case '3': //editar livro
+					      	case '2': removeraluno(&a);
+					                 	break;
+										 	  
+							case '3': //editar aluno
 							            break;
 							            
 				           	case '4': listaraluno(&a);
@@ -295,7 +403,10 @@ ALUNO a;
 				     }while (c!='5');
 				       
 				       break;
-			
+				       
+			case '4': system ("cls");
+			          gotoxy(10,17); printf("\t\tPROGRAMA ENCERRADO");
+			          break;
 		}
 					
 } while (c!='4'); 
