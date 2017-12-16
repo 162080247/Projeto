@@ -4,8 +4,8 @@
 #include<string.h>
 
 typedef struct {
-	char codle[21];
-	int data,ativo;
+	char codle[21],matrie[11];
+	int data;
 }EMPRESTIMO;
 
 typedef struct {
@@ -16,9 +16,6 @@ typedef struct {
 typedef struct {
 	char nomeal[31],matri[11],cpf[14];
 }ALUNO;
-
-
-
 
 void linha(){
 int i;
@@ -38,18 +35,20 @@ gotoxy(15,5); printf("%c",201);
 	  printf("%c",188);
 }
 
-void linhalateral (){
-int i;
-for (i=6;i<20;i++){
-	gotoxy(15,i);
-	printf("%c",186);
-	gotoxy (66,i);
-	printf("%c",186);
-}
+void linhalateral ()
+{
+ int i;
+ 
+	for (i=6;i<20;i++)
+	{
+		gotoxy(15,i); printf("%c",186);
+		gotoxy (66,i); printf("%c",186);
+	}
 }
 
 
-void menuprincipal (){
+void menuprincipal ()
+{
 system("cls");
 linha();
 linhalateral();
@@ -309,11 +308,16 @@ void editarlivro (LIVRO *pt)
 	char c,cod2[11];
 	FILE *file;
 	system ("cls");
+	
 	printf("DIGITE O CODIGO DO LIVRO");
 	gets(cod2);
+	
 	file = fopen ("dadoslivro.dat","r+b");
-	while (fread(pt,sizeof(*pt),1,file)==1){
-		if (strcmp(cod2,pt->codl)==0){
+	
+	while (fread(pt,sizeof(*pt),1,file)==1)
+	{
+		if (strcmp(cod2,pt->codl)==0)
+		{
 			printf("NOME: %s\n",pt->nomel);
 			printf("AUTOR: %s\n",pt->nomea);
 			printf("AREA: %s\n",pt->area);
@@ -321,24 +325,33 @@ void editarlivro (LIVRO *pt)
 			printf("QUANTIDADE: %d\n",pt->quant);
 			printf("DESEJA FAZER ALTERACAO: S-SIM, N-NAO:");
 			c=getch();
-			if (c=='S'|| c=='s'){
+			
+			if (c=='S'|| c=='s')
+			{
 				printf("\n\nNOVO NOME:");
 				gets(pt->nomel);
 				setbuf(stdin,NULL);
+				
 				printf("NOME DO AUTOR:");
 				gets(pt->nomea);
 				setbuf(stdin,NULL);
+				
 				printf("AREA:");
 				gets(pt->area);
 				setbuf(stdin,NULL);
+				
 				printf("CODIGO:");
 				gets(pt->area);
 				setbuf(stdin,NULL);
+				
 				printf("QUANTIDADE:");
 				scanf("%d",&pt->quant);
+				
 				fseek(file,ftell(file)-sizeof(*pt),0);
 				fwrite (pt,sizeof(*pt),1,file);
 				fclose(file);
+				
+				printf("INFORMCOES MODIFICADAS COM SUECESSO");
 				
 			}
 		}
@@ -346,70 +359,282 @@ void editarlivro (LIVRO *pt)
 	
 }
 
+void editaraluno (ALUNO *pt)
+{
+	char c,matri2[11];
+	FILE *file;
+	system ("cls");
+	
+	printf("DIGITE A MATRICULA DO ALUNO");
+	gets(matri2);
+	
+	file = fopen ("dadosaluno.dat","r+b");
+	
+	while (fread(pt,sizeof(*pt),1,file)==1)
+	{
+		if (strcmp(matri2,pt->matri)==0)
+		{
+			printf("NOME: %s\n",pt->nomeal);
+			printf("MATRICULA: %s\n",pt->matri);
+			printf("CPF: %s\n",pt->cpf);
+			printf("DESEJA FAZER ALTERACAO: S-SIM, N-NAO:");
+			c=getch();
+			
+			if (c=='S'|| c=='s')
+			{
+				printf("\n\nNOME:");
+				gets(pt->nomeal);
+				setbuf(stdin,NULL);
+				
+				printf("MATRICULA:");
+				gets(pt->matri);
+				setbuf(stdin,NULL);
+				
+				printf("CPF:");
+				gets(pt->cpf);
+				setbuf(stdin,NULL);
+				
+				fseek(file,ftell(file)-sizeof(*pt),0);
+				fwrite (pt,sizeof(*pt),1,file);
+				fclose(file);
+				
+				printf("INFORMCOES MODIFICADAS COM SUECESSO");
+				
+			}
+		}
+	}
+	
+}
+
+void menuemprestimo(){
+	system ("cls");
+	printf("MENU DE EMPRESTIMO.\n\n");
+	printf("1-NOVO EMPRESTIMO.\n");
+	printf("2-DEVOLUCAO.\n");
+	printf("3-LISTAR EMPRESTIMO.\n");
+	printf("4-RETORNAR AO MENU PRINCIPAL.");
+}
+
+void emprestimo(EMPRESTIMO *pt,LIVRO *ptr, ALUNO *pp){
+	FILE *file,*file2;
+	int i=0;
+	int g=0;
+	char c,e[21];
+	
+	system("cls");
+					
+	printf("DIGITE O CODIGO DO ALUNO:");
+	 setbuf(stdin,NULL);
+	  gets(e);
+ 
+ 	file = fopen ("dadosaluno.dat","rb");
+
+	  while (fread(pp,sizeof(*pp),1,file)==1)
+	   { 
+		  if(strcmp(e,pp->matri)==0)
+		  {
+		  	i++;
+		  }
+	   }
+	   fclose (file);
+	  
+	  if (i==0)
+		{
+			printf("ALUNO NÂO MATRICULADO");
+		}
+	  else 
+	   { 
+	    	i=0;
+		 	file = fopen ("dadosemprestimo.dat","ab+");
+		 	while (fread (pt,sizeof(*pt),1,file)==1)
+			 { 
+			 	if (strcmp(pt->matrie,e)==0)
+				 { 
+					i++;
+				 }
+			 }
+			 
+		 	fclose (file);
+		 	
+	     if (i==2)
+	   	  {
+	   	  	
+		 	  printf("QUANTIDADE DE EMPRESTIMOS EXCEDIDA");
+          }
+      	 else 
+		   {  i=0;
+      		   printf("DIGITE O CODIGO DO LIVRO:\n");
+      		    setbuf(stdin,NULL);
+      		     gets(pt->codle);
+      		     
+      		  file = fopen ("dadoslivro.dat","r+b");
+				
+			  while(fread(ptr,sizeof(*ptr),1,file)==1)
+			  {
+			  	if (strcmp(pt->codle,ptr->codl)==0)
+				  {
+			  		i++;
+			  		g= ptr->quant;
+				  }
+			  }
+			  
+			  if (i==0){
+			  	 printf("LIVRO NAO CADASTRADO\n");
+			  }
+			  
+			  else 
+			  {  			       
+                if (g<=0){
+                 	printf("NAO TEM EXEMPLARES DISPONIVEIS\n");
+				 }
+				 else{
+				 	//pegardata();
+				 	
+				 	printf("DESEJA FAZER O EMPRESTIMO: S-SIM,N-NAO\n");
+				 	c=getch();
+				 	
+				 	if (c=='s'|| c=='S')
+				 	 {  
+				 	    
+					  rewind(file);
+				 		while(fread(ptr,sizeof(*ptr),1,file)==1)
+				 		 {	
+							 if (strcmp(pt->codle,ptr->codl)==0)
+							 {   
+	                              
+								  ptr->quant= ptr->quant-1;
+								  fseek(file,ftell(file)-sizeof(*ptr),0);
+				                  fwrite (ptr,sizeof(*ptr),1,file);
+				                  fseek(file,0,SEEK_END);
+				                 
+							 	  
+							 }
+						 } 
+						 
+				  file2 = fopen ("dadosemprestimo.dat","ab+");
+				  strcpy(pt->matrie,e);
+				  fwrite(pt,sizeof(*pt),1,file2);
+				  fclose(file2);
+					
+					 }
+				 	
+				 }
+				 
+			  }   
+fclose(file);
+		}
+	
+	}
+	system("Pause");
+}
+
+void listaremprestimo (EMPRESTIMO *pt){
+	int i=6;
+	FILE *file;
+	file=fopen("dadosemprestimo.dat","rb");
+	system ("cls");
+	
+	printf ("LIVOS CADASTRADOS\n");	
+	
+	gotoxy(1,4); printf("CODIGO DO LIVRO");
+	gotoxy(25,4); printf("MATRICULA");
+	
+	while (fread(pt,sizeof(*pt),1,file)==1)
+	{
+		
+		gotoxy(1,i);	printf("%s\t",pt->codle);
+		gotoxy(25,i);	printf("%s\t",pt->matrie);
+		i++;
+	}
+	gotoxy(1,i);
+	system("Pause");
+fclose (file);
+}
 
 
 main ()
 {
-char c;
+	
+char c,d;
 LIVRO liv;
 ALUNO a;
+EMPRESTIMO b;
 
 	do{
-		menuprincipal();
-		c=getch();
-	switch (c){
-	
-		case '1': do{
-			           menulivro();
-		               c=getch();
+			menuprincipal();
+			d=getch();
+			
+		switch (d)
+		{
+			case '1': do
+						{
+			          		 menulivro();
+		              		 c=getch();
 		               
-		            	   switch (c)
-				     	 {
-		                  	 case '1':  cadastrarl(&liv);
-							            
-					               		break;
+		            	   	switch (c)
+				     		 {
+		                  	 	case '1': cadastrarl(&liv); 
+								            break;
 					          
-					      	 case '2': editarlivro(&liv);
-					                 	break;	  
+					      	 	case '2': editarlivro(&liv);
+					                    	break;	  
 					                 	
 							  case '3': removerlivro (&liv);
-							            break;
+							                break;
 							            
-				           	 case '4': listar(&liv);
-				           	           system("Pause");
-				                       break;
-						}
-					}while (c!='5');
+				           	  case '4': listar(&liv);
+				           	            system("Pause");
+				                            break;
+							}
+						} while (c!='5'); break;
 					
-					break;
-					
-		case '2': do{  menudoaluno();
-		               c=getch();
+			case '2': do
+						{ 
+							 menudoaluno();
+		               		 c=getch();
 		           
-				     switch (c)
-				     	 {
-		                  	case '1': cadastraraluno(&a);
-					               	    break;
+				    	 switch (c)
+				     	 	{
+		                  		case '1': cadastraraluno(&a);
+					               	      break;
 					          
-					      	case '2': removeraluno(&a);
+					      		case '2': removeraluno(&a);
 					                 	break;
 										 	  
-							case '3': //editar aluno
-							            break;
+								case '3': editaraluno(&a);
+							              break;
 							            
-				           	case '4': listaraluno(&a);
-				           	           break;
-				         }
-				     }while (c!='5');
-				       
-				       break;
+				           		case '4': listaraluno(&a);
+				           	              break;
+				        	 }
+				    	 } while (c!='5'); break;
+				    	 
+			case '3': do{
+				          	 menuemprestimo();
+				          	 c=getch();
+				         
+						 switch (c){
+						 	
+						 	 case '1': emprestimo(&b,&liv,&a);
+							           break;
+						 	 case '2': break;
+						 	 case '3': listaremprestimo(&b);
+							           break;
+						 	 case '4': break;
+						 	
+						 	 	
+						 } 
+				        
+				
+			            }while (c!='4');
+						 break;	    	 
 				       
 			case '4': system ("cls");
-			          gotoxy(10,17); printf("\t\tPROGRAMA ENCERRADO");
-			          break;
+			     	  gotoxy(10,10); printf("\t\tPROGRAMA ENCERRADO"); gotoxy(17,17);
+			      	  break;
 		}
 					
-} while (c!='4'); 
+	} while (d!='4'); 
 	
 }
 
