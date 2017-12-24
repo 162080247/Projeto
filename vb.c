@@ -10,6 +10,7 @@ typedef struct
     int quant,codl;
 } LIVRO;
 
+
 typedef struct
 {
     char nomeal[31],cpf[14];
